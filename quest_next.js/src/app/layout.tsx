@@ -11,7 +11,7 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <html>
+    <html lang="ja">
       <head>
         <meta charSet="utf-8" />
         <title>Conduit</title>

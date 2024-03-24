@@ -19,157 +19,135 @@ export default function Home() {
 
   useEffect(() => {
     //fetch("http://localhost:8000/api/home")
-    //fetch(process.env.NEXT_PUBLIC_API_URL + "/home")
-    fetchArticles()
+    fetch(process.env.NEXT_PUBLIC_API_URL + "/home")
+      //fetchArticles()
       .then((response) => response.json())
       .then((data) => setArticles(data.articles))
+      .then((data) => console.log(data))
       .catch((error) => console.error("Error fetching articles:", error));
   }, []);
 
   return (
-    <div class="home-page">
-      <div class="banner">
-        <div class="container">
-          <h1 class="logo-font">conduit</h1>
+    <div className="home-page">
+      <div className="banner">
+        <div className="container">
+          <h1 className="logo-font">conduit</h1>
           <p>A place to share your knowledge.</p>
         </div>
       </div>
 
-      <div class="container page">
-        <div class="row">
-          <div class="col-md-9">
-            <div class="feed-toggle">
-              <ul class="nav nav-pills outline-active">
-                <li class="nav-item">
-                  <a class="nav-link" href="">
+      <div className="container page">
+        <div className="row">
+          <div className="col-md-9">
+            <div className="feed-toggle">
+              <ul className="nav nav-pills outline-active">
+                <li className="nav-item">
+                  <a className="nav-link" href="">
                     Your Feed
                   </a>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link active" href="">
+                <li className="nav-item">
+                  <a className="nav-link active" href="">
                     Global Feed
                   </a>
                 </li>
               </ul>
             </div>
-            <ul>
-              {articles.map((article) => (
-                <li key={article.id}>{article.title}</li>
-              ))}
-            </ul>
-            <div class="article-preview">
-              <div class="article-meta">
-                <a href="/profile/eric-simons">
-                  <Image
-                    src="http://i.imgur.com/Qr71crq.jpg"
-                    alt=""
-                    width={300}
-                    height={300}
-                  />
-                </a>
-                <div class="info">
-                  <a href="/profile/eric-simons" class="author">
-                    Eric Simons
+            {articles.map((article) => (
+              <div className="article-preview" key={article.id}>
+                <div className="article-meta">
+                  <a href="/profile/eric-simons">
+                    <Image
+                      src="http://i.imgur.com/Qr71crq.jpg"
+                      alt=""
+                      width={300}
+                      height={300}
+                    />
                   </a>
-                  <span class="date">January 20th</span>
+                  <div className="info">
+                    <a
+                      href={`/profile/${article.author.username}`}
+                      className="author"
+                    >
+                      {article.author.username}
+                    </a>
+                    <span className="date">
+                      {new Date(article.createdAt).toLocaleDateString("en-US", {
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </div>
+                  <button className="btn btn-outline-primary btn-sm pull-xs-right">
+                    <i className="ion-heart"></i> {article.favoritesCount}
+                  </button>
                 </div>
-                <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i class="ion-heart"></i> 29
-                </button>
-              </div>
-              <a
-                href="/article/how-to-build-webapps-that-scale"
-                class="preview-link"
-              >
-                <h1>How to build webapps that scale</h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-                <ul class="tag-list">
-                  <li class="tag-default tag-pill tag-outline">realworld</li>
-                  <li class="tag-default tag-pill tag-outline">
-                    implementations
-                  </li>
-                </ul>
-              </a>
-            </div>
-
-            <div class="article-preview">
-              <div class="article-meta">
-                <a href="/profile/albert-pai">
-                  <Image
-                    src="http://i.imgur.com/N4VcUeJ.jpg"
-                    alt=""
-                    width={300}
-                    height={300}
-                  />
+                <a href={`/article/${article.slug}`} className="preview-link">
+                  <h1>{article.title}</h1>
+                  <p>{article.description}</p>
+                  <span>Read more...</span>
+                  <ul className="tag-list">
+                    <li className="tag-default tag-pill tag-outline">
+                      realworld
+                    </li>
+                    <li className="tag-default tag-pill tag-outline">
+                      implementations
+                    </li>
+                  </ul>
                 </a>
-                <div class="info">
-                  <a href="/profile/albert-pai" class="author">
-                    Albert Pai
-                  </a>
-                  <span class="date">January 20th</span>
-                </div>
-                <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i class="ion-heart"></i> 32
-                </button>
               </div>
-              <a href="/article/the-song-you" class="preview-link">
-                <h1>
-                  The song you won&apos;t ever stop singing. No matter how hard
-                  you try.
-                </h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-                <ul class="tag-list">
-                  <li class="tag-default tag-pill tag-outline">realworld</li>
-                  <li class="tag-default tag-pill tag-outline">
-                    implementations
-                  </li>
-                </ul>
-              </a>
-            </div>
+            ))}
 
-            <ul class="pagination">
-              <li class="page-item active">
-                <a class="page-link" href="">
+            <ul className="pagination">
+              <li className="page-item active">
+                <a className="page-link" href="">
                   1
                 </a>
               </li>
-              <li class="page-item">
-                <a class="page-link" href="">
+              <li className="page-item">
+                <a className="page-link" href="">
                   2
                 </a>
               </li>
             </ul>
           </div>
-
-          <div class="col-md-3">
-            <div class="sidebar">
+          {articles.map((article) => (
+            <div className="taglist" key={article.id}>
+              {article.tagList.map((tag, index) => (
+                <a href="" className="tag-pill tag-default" key={index}>
+                  {tag}
+                </a>
+              ))}
+            </div>
+          ))}
+          ;
+          <div className="col-md-3">
+            <div className="sidebar">
               <p>Popular Tags</p>
 
-              <div class="tag-list">
-                <a href="" class="tag-pill tag-default">
+              <div className="tag-list">
+                <a href="" className="tag-pill tag-default">
                   programming
                 </a>
-                <a href="" class="tag-pill tag-default">
+                <a href="" className="tag-pill tag-default">
                   javascript
                 </a>
-                <a href="" class="tag-pill tag-default">
+                <a href="" className="tag-pill tag-default">
                   emberjs
                 </a>
-                <a href="" class="tag-pill tag-default">
+                <a href="" className="tag-pill tag-default">
                   angularjs
                 </a>
-                <a href="" class="tag-pill tag-default">
+                <a href="" className="tag-pill tag-default">
                   react
                 </a>
-                <a href="" class="tag-pill tag-default">
+                <a href="" className="tag-pill tag-default">
                   mean
                 </a>
-                <a href="" class="tag-pill tag-default">
+                <a href="" className="tag-pill tag-default">
                   node
                 </a>
-                <a href="" class="tag-pill tag-default">
+                <a href="" className="tag-pill tag-default">
                   rails
                 </a>
               </div>

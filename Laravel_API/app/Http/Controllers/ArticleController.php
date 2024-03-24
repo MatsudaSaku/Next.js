@@ -13,8 +13,35 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        $articles = Article::with('tags', 'user')->get();
-        return response()->json(['articles' => $articles]);
+        //$articles = Article::with('tags', 'user')->get();
+        //return response()->json(['articles' => $articles]);
+        $articles = Article::with('user')->get();
+
+       if (!$articles) {
+        return response()->json(['message' => 'Article not found'], 404);
+    }
+
+    return response()->json([
+        'articles' => $articles->map(function ($article) {
+            return [
+            'slug' => $article->slug,
+            'title' => $article->title,
+            'description' => $article->description,
+            'body' => $article->body,
+            'tagList' => $article->tags->pluck('name'),
+            'createdAt' => $article->created_at->format('Y-m-d\TH:i:s.vP'),
+            'updatedAt' => $article->updated_at->format('Y-m-d\TH:i:s.vP'),
+            'favorited' => false,
+            'favoritesCount' => 0,
+            'author' => [
+                'username' => $article->author->username,
+                'bio' => $article->author->bio,
+                'image' => $article->author->image,
+                'following' => false,
+            ]
+            ];
+        })
+    ]);
     }
 
     public function store(Request $request)
