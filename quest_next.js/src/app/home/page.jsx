@@ -120,7 +120,7 @@ export default function Home() {
               ))}
             </div>
           ))}
-          ;
+
           <div className="col-md-3">
             <div className="sidebar">
               <p>Popular Tags</p>

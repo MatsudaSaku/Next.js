@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import Router from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
+
+  const router = useRouter();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -28,7 +30,7 @@ export default function Login() {
 
       localStorage.setItem("token", data.token);
 
-      Router.push("/home");
+      router.push("/home");
     } catch (error) {
       console.error("Login error:", error);
 

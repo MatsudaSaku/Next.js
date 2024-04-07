@@ -1,15 +1,24 @@
-import React, { ReactNode } from "react";
+"use client";
+import React, { useState, useEffect, ReactNode } from "react";
 import Link from "next/link";
 
-const isAuthenticated = () => {
-  return false;
+const useIsAuthenticated = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
+
+  return isAuthenticated;
 };
 
 interface LayoutProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
+  const isAuthenticated = useIsAuthenticated();
   return (
     <html lang="ja">
       <head>
@@ -28,19 +37,19 @@ const Layout = ({ children }: LayoutProps) => {
       <body>
         <nav className="navbar navbar-light">
           <div className="container">
-            <Link legacyBehavior href="/" passHref>
+            <Link legacyBehavior href="/home" passHref>
               <a className="navbar-brand">conduit</a>
             </Link>
             <ul className="nav navbar-nav pull-xs-right">
               <li className="nav-item">
-                <Link legacyBehavior href="/" passHref>
+                <Link legacyBehavior href="/home" passHref>
                   <a className="nav-link active">Home</a>
                 </Link>
               </li>
-              {isAuthenticated() ? (
+              {isAuthenticated ? (
                 <>
                   <li className="nav-item">
-                    <Link legacyBehavior href="/editor" passHref>
+                    <Link legacyBehavior href="create/edit" passHref>
                       <a className="nav-link">
                         <i className="ion-compose"></i>&nbsp;New Article
                       </a>
