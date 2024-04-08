@@ -46,8 +46,12 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
-
-        dd($request->all());
+        /*$user_id = auth()->id();
+        return response()->json([
+            $request->all(),
+            //'user_id'=>$user_id,
+        ]);*/
+        //dd($request->all());
 
         //$data = $request->input('article');
         $data = $request->validate([
@@ -58,16 +62,23 @@ class ArticleController extends Controller
         ])['article'];
 
     $slug = Str::slug($data['title'], '-');
+    $user_id = auth()->id();
 
     $article = new Article([
         'title' => $data['title'],
         'description' => $data['description'],
         'body' => $data['body'],
         'slug' => $slug,
-        'user_id' => auth()->id(),
+        'user_id' => $user_id,
     ]);
-    $article->save();
 
+    if($article->save()){
+        return response()->json([
+            'message' => 'Article saved successfully',
+            'article' => $article
+        ]);
+
+    }
     if (isset($data['tagList'])) {
         $tagIds = [];
         foreach ($data['tagList'] as $tagName) {
@@ -79,7 +90,7 @@ class ArticleController extends Controller
         $article->tags()->sync($tagIds);
     }
 
-        return response()->json([
+        /*return response()->json([
             'article' => [
                 'slug' => $article->slug,
                 'title' => $article->title,
@@ -97,7 +108,7 @@ class ArticleController extends Controller
                     'following' => false,
                 ]
             ]
-        ]);
+        ]);*/
     }
 
     public function show($slug)

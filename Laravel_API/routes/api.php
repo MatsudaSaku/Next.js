@@ -26,7 +26,7 @@ Route::post('/users/login', [App\Http\Controllers\Auth\LoginController::class, '
 
 Route::get('/articles', [App\Http\Controllers\ArticleController::class, 'store'])->middleware('auth:sanctum');
 
-Route::post('/articles', [App\Http\Controllers\ArticleController::class, 'store']);//->middleware('auth:sanctum');
+Route::post('/articles', [App\Http\Controllers\ArticleController::class, 'store'])->middleware('auth:sanctum');
 
 Route::post('/users/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->middleware('auth:sanctum');
 
