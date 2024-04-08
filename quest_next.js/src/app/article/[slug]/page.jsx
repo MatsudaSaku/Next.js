@@ -63,7 +63,9 @@ export default function ArticlePage() {
               <span class="counter">{article.favoritesCount}</span>
             </button>
             <button class="btn btn-sm btn-outline-secondary">
-              <i class="ion-edit"></i> Edit Article
+              <a href={`/edit/${article.slug}`}>
+                <i class="ion-edit"></i> Edit Article
+              </a>
             </button>
             <button class="btn btn-sm btn-outline-danger">
               <i class="ion-trash-a"></i> Delete Article
@@ -114,7 +116,9 @@ export default function ArticlePage() {
               &nbsp; Favorite Article <span class="counter">(29)</span>
             </button>
             <button class="btn btn-sm btn-outline-secondary">
-              <i class="ion-edit"></i> Edit Article
+              <a href={`/edit/${article.slug}`}>
+                <i class="ion-edit"></i> Edit Article
+              </a>
             </button>
             <button class="btn btn-sm btn-outline-danger">
               <i class="ion-trash-a"></i> Delete Article

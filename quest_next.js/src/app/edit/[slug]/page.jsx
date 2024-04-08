@@ -1,20 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 
-export default function ArticleForm() {
+import { useParams } from "next/navigation";
+
+export default function EditPage() {
+  const [article, setArticle] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
   const [tagList, setTagList] = useState([]);
-  const [message, setMessage] = useState("");
-
-  // タグの追加や削除など、タグリストの管理に関するロジックは省略
+  const params = useParams();
+  //const slug = router.query ? router.query.slug : null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(process.env.NEXT_PUBLIC_API_URL);
 
     const articleData = {
       article: {
@@ -24,8 +24,11 @@ export default function ArticleForm() {
         tagList,
       },
     };
+    const { slug } = params;
+    const API_URL = process.env.NEXT_PUBLIC_API_URL + `/articles/${slug}`;
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL + "/articles";
+    console.log(API_URL);
+
     /*try {
       //const API_URL = "http://localhost:8000/api/articles";
       const token = localStorage.getItem("token");
@@ -48,7 +51,7 @@ export default function ArticleForm() {
     }*/
     try {
       const response = await fetch(API_URL, {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -65,13 +68,38 @@ export default function ArticleForm() {
         throw new Error("Article submission failed");
       }
 
-      const result = await response.json();
+      const result = responseData;
       console.log("Article submitted successfully:", result);
       // window.location.href = "/home";
     } catch (error) {
       console.error("Error submitting article:", error);
     }
   };
+
+  useEffect(() => {
+    // APIから記事データをフェッチする関数
+    const fetchArticle = async () => {
+      const { slug } = params;
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/articles/${slug}`
+        );
+        if (!response.ok) throw new Error("Article not found");
+        const data = await response.json();
+        setArticle(data.article); // 取得した記事データを状態にセット
+        setDescription(data.article.description);
+        setBody(data.article.body);
+        setTagList(data.article.tagList || []);
+        setTitle(data.article.title);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchArticle();
+  }, [params.slug]); // slugが変更された時に再フェッチ
+
+  if (!article) return <div>Loading...</div>; // 記事データがまだない場合はローディング表示
 
   return (
     <div className="editor-page">
@@ -84,7 +112,6 @@ export default function ArticleForm() {
                   <input
                     type="text"
                     className="form-control form-control-lg"
-                    placeholder="Article Title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
