@@ -13,9 +13,7 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        //$articles = Article::with('tags', 'user')->get();
-        //return response()->json(['articles' => $articles]);
-        $articles = Article::with('user')->get();
+        $articles = Article::with('user','tags')->get();
 
        if (!$articles) {
         return response()->json(['message' => 'Article not found'], 404);
@@ -46,19 +44,12 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
-        /*$user_id = auth()->id();
-        return response()->json([
-            $request->all(),
-            //'user_id'=>$user_id,
-        ]);*/
-        //dd($request->all());
-
-        //$data = $request->input('article');
         $data = $request->validate([
+
             'article.title' => 'required|string',
             'article.description' => 'required|string',
             'article.body' => 'required|string',
-            'article.tagList' => 'sometimes|array',
+            'article.tagList' => 'sometimes|string',
         ])['article'];
 
     $slug = Str::slug($data['title'], '-');
@@ -79,36 +70,21 @@ class ArticleController extends Controller
         ]);
 
     }
-    if (isset($data['tagList'])) {
+
+    if (!empty($data['tagList'])) {
+        $tagNames = explode(',', $data['tagList']);
         $tagIds = [];
-        foreach ($data['tagList'] as $tagName) {
-
-            $tag = Tag::firstOrCreate(['name' => $tagName]);
-            $tagIds[] = $tag->id;
+        foreach ($tagNames as $tagName) {
+            $tagName = trim($tagName);
+            if (!empty($tagName)) {
+                
+                $tag = Tag::firstOrCreate(['name' => $tagName]);
+                $tagIds[] = $tag->id;
+            }
         }
-
+        
         $article->tags()->sync($tagIds);
     }
-
-        /*return response()->json([
-            'article' => [
-                'slug' => $article->slug,
-                'title' => $article->title,
-                'description' => $article->description,
-                'body' => $article->body,
-                'tagList' => $article->tags->pluck('name'),
-                'createdAt' => $article->created_at->format('Y-m-d\TH:i:s.vP'),
-                'updatedAt' => $article->updated_at->format('Y-m-d\TH:i:s.vP'),
-                'favorited' => false,
-                'favoritesCount' => 0,
-                'author' => [
-                    'username' => $article->user->username,
-                    'bio' => $article->user->bio,
-                    'image' => $article->user->image,
-                    'following' => false,
-                ]
-            ]
-        ]);*/
     }
 
     public function show($slug)

@@ -11,7 +11,6 @@ export default function EditPage() {
   const [body, setBody] = useState("");
   const [tagList, setTagList] = useState([]);
   const params = useParams();
-  //const slug = router.query ? router.query.slug : null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,26 +28,6 @@ export default function EditPage() {
 
     console.log(API_URL);
 
-    /*try {
-      //const API_URL = "http://localhost:8000/api/articles";
-      const token = localStorage.getItem("token");
-      const response = await axios.post(API_URL, articleData, {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-          Authorization: `Bearer ${token}`,
-          //Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      console.log("Article submitted successfully:", response.data);
-      window.location.href = "/home";
-    } catch (error) {
-      console.error(
-        "Error submitting article:",
-        error.response ? error.response.data : error.message
-      );
-    }*/
     try {
       const response = await fetch(API_URL, {
         method: "PUT",
@@ -61,8 +40,6 @@ export default function EditPage() {
       const responseData = await response.json();
       console.log(responseData.user_id);
 
-      //上のフェッチのリクエストは送れても、レスポンスが返っていない？
-
       if (!response.ok) {
         console.log(response.body);
         throw new Error("Article submission failed");
@@ -70,14 +47,13 @@ export default function EditPage() {
 
       const result = responseData;
       console.log("Article submitted successfully:", result);
-      // window.location.href = "/home";
+      window.location.href = "/home";
     } catch (error) {
       console.error("Error submitting article:", error);
     }
   };
 
   useEffect(() => {
-    // APIから記事データをフェッチする関数
     const fetchArticle = async () => {
       const { slug } = params;
       try {
@@ -86,7 +62,7 @@ export default function EditPage() {
         );
         if (!response.ok) throw new Error("Article not found");
         const data = await response.json();
-        setArticle(data.article); // 取得した記事データを状態にセット
+        setArticle(data.article);
         setDescription(data.article.description);
         setBody(data.article.body);
         setTagList(data.article.tagList || []);
@@ -97,9 +73,9 @@ export default function EditPage() {
     };
 
     fetchArticle();
-  }, [params.slug]); // slugが変更された時に再フェッチ
+  }, [params.slug]);
 
-  if (!article) return <div>Loading...</div>; // 記事データがまだない場合はローディング表示
+  if (!article) return <div>Loading...</div>;
 
   return (
     <div className="editor-page">

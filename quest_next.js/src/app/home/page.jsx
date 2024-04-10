@@ -87,6 +87,15 @@ export default function Home() {
                   <p>{article.description}</p>
                   <span>Read more...</span>
                   <ul className="tag-list">
+                    {article.tags &&
+                      article.tags.map((tag) => (
+                        <li
+                          key={tag.id}
+                          className="tag-default tag-pill tag-outline"
+                        >
+                          {tag.name}
+                        </li>
+                      ))}
                     <li className="tag-default tag-pill tag-outline">
                       realworld
                     </li>

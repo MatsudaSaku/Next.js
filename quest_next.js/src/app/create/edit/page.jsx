@@ -10,8 +10,6 @@ export default function ArticleForm() {
   const [tagList, setTagList] = useState([]);
   const [message, setMessage] = useState("");
 
-  // タグの追加や削除など、タグリストの管理に関するロジックは省略
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(process.env.NEXT_PUBLIC_API_URL);
@@ -26,26 +24,7 @@ export default function ArticleForm() {
     };
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL + "/articles";
-    /*try {
-      //const API_URL = "http://localhost:8000/api/articles";
-      const token = localStorage.getItem("token");
-      const response = await axios.post(API_URL, articleData, {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-          Authorization: `Bearer ${token}`,
-          //Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
 
-      console.log("Article submitted successfully:", response.data);
-      window.location.href = "/home";
-    } catch (error) {
-      console.error(
-        "Error submitting article:",
-        error.response ? error.response.data : error.message
-      );
-    }*/
     try {
       const response = await fetch(API_URL, {
         method: "POST",
@@ -58,16 +37,14 @@ export default function ArticleForm() {
       const responseData = await response.json();
       console.log(responseData.user_id);
 
-      //上のフェッチのリクエストは送れても、レスポンスが返っていない？
-
       if (!response.ok) {
         console.log(response.body);
         throw new Error("Article submission failed");
       }
 
-      const result = await response.json();
+      const result = responseData;
       console.log("Article submitted successfully:", result);
-      // window.location.href = "/home";
+      window.location.href = "/home";
     } catch (error) {
       console.error("Error submitting article:", error);
     }

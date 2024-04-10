@@ -9,13 +9,13 @@ function logout() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`, // トークンを添付
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   })
     .then((response) => {
       if (response.ok) {
-        localStorage.removeItem("token"); // ローカルストレージからトークンを削除
-        window.location.href = "/login"; // ログアウト後のリダイレクト先
+        localStorage.removeItem("token");
+        window.location.href = "/login";
       } else {
         throw new Error("Logout failed");
       }

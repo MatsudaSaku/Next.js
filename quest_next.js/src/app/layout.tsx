@@ -49,7 +49,7 @@ const Layout = ({ children }: LayoutProps) => {
               {isAuthenticated ? (
                 <>
                   <li className="nav-item">
-                    <Link legacyBehavior href="create/edit" passHref>
+                    <Link legacyBehavior href="/create/edit" passHref>
                       <a className="nav-link">
                         <i className="ion-compose"></i>&nbsp;New Article
                       </a>
